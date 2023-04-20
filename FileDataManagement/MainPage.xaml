@@ -4,18 +4,20 @@
              x:Class="FileDataManagement.MainPage">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="5*"></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="4*"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid x:Name="DBDisplay"
-              Grid.Row="0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid x:Name="DBDisplay" Grid.Row="0" Grid.ColumnSpan="2">
             <!-- Filled by MainPage.cs -->
         </Grid>
+        <Editor x:Name="QueryInput" Grid.Row="1"
+                Text="SELECT * FROM Book"/>
         <Button x:Name="DBDisplay_Btn" Clicked="ShowDatabase"
-                Grid.Row="1"
-                Text="Ciao">
-        </Button>
-        <Label Grid.Row="2">Prova Label</Label>
+                Grid.Row="1" Grid.Column="1"
+                Text="Process Query"/>
     </Grid>
 </ContentPage>
