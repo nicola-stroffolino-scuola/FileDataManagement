@@ -1,23 +1,119 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="FileDataManagement.MainPage">
+             x:Class="FileDataManagement.MainPage"
+             Title="Gestione di File e Database - Nicola Stroffolino">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="4*"></RowDefinition>
             <RowDefinition></RowDefinition>
+            <RowDefinition Height="6*"></RowDefinition>
+            <RowDefinition Height="2*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Grid x:Name="DBDisplay" Grid.Row="0" Grid.ColumnSpan="2">
-            <!-- Filled by MainPage.cs -->
+        
+        <!-- Grid Row 0 -->
+        
+        <Grid Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label x:Name="ISBN"
+               Grid.Row="0" Grid.Column="0" 
+               VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
+               IsVisible="False">ISBN</Label>
+            <Label x:Name="Titolo"
+               Grid.Row="0" Grid.Column="1"
+               VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
+               IsVisible="False">Titolo</Label>
+            <Label x:Name="Anno"
+               Grid.Row="0" Grid.Column="2"
+               VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
+               IsVisible="False">Anno</Label>
+            <Label x:Name="Prezzo"
+               Grid.Row="0" Grid.Column="3" 
+               VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
+               IsVisible="False">Prezzo</Label>
+            <Label x:Name="Editore"
+               Grid.Row="0" Grid.Column="4"
+               VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
+               IsVisible="False">Editore</Label>
+            <Label x:Name="Genere"
+               Grid.Row="0" Grid.Column="5"
+               VerticalTextAlignment="Center" HorizontalTextAlignment="Center"
+               IsVisible="False">Genere</Label>
         </Grid>
-        <Editor x:Name="QueryInput" Grid.Row="1"
-                Text="SELECT * FROM Book"/>
-        <Button x:Name="DBDisplay_Btn" Clicked="ShowDatabase"
-                Grid.Row="1" Grid.Column="1"
-                Text="Process Query"/>
+
+        <!-- Grid Row 1 -->
+
+        <CollectionView x:Name="DBDisplay" 
+                        Grid.Row="1" Grid.ColumnSpan="2">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Row="1" Grid.Column="0" Text="{Binding ISBN}" HorizontalTextAlignment="Center"></Label>
+                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding Titolo}" HorizontalTextAlignment="Center"></Label>
+                        <Label Grid.Row="1" Grid.Column="2" Text="{Binding Anno}" HorizontalTextAlignment="Center"></Label>
+                        <Label Grid.Row="1" Grid.Column="3" Text="{Binding Prezzo}" HorizontalTextAlignment="Center"></Label>
+                        <Label Grid.Row="1" Grid.Column="4" Text="{Binding Editore}" HorizontalTextAlignment="Center"></Label>
+                        <Label Grid.Row="1" Grid.Column="5" Text="{Binding Genere}" HorizontalTextAlignment="Center"></Label>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Grid Row 2 -->
+
+        <Grid Grid.Row="2" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0"  Grid.Column="0"
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Center">SELECT</Label>
+            <Entry x:Name="QueryFieldsList" 
+                   Grid.Row="0" Grid.Column="1"
+                   Text="*"/>
+            <Label Grid.Row="1" Grid.Column="0"
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Center">FROM Book</Label>
+            <Label Grid.Row="2" Grid.Column="0"
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Center">WHERE</Label>
+            <Entry x:Name="QueryCondition" 
+                   Grid.Row="2" Grid.Column="1"
+                   Text="Anno"/>
+        </Grid>
+        
+        <Button Clicked="ShowDatabase"
+                Grid.Row="2" Grid.Column="1"
+                Text="Process Query"
+                Margin="30"/>
     </Grid>
 </ContentPage>

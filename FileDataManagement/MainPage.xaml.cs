@@ -1,5 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
-
+using System.Collections.ObjectModel;
 
 namespace FileDataManagement;
 
@@ -16,26 +16,23 @@ public partial class MainPage : ContentPage
         string bundleFileName = "DB_Libri.db";
         string targetFile = Path.Combine(mainDir, fileName);
 
-        //await DisplayAlert("Info", $"The book database is located in {targetFile}", "Ok");
-
         if (!File.Exists(targetFile)) {
-            //Se it file non esiste nel file system della app, to copia dal bundle 
+            //Se il file non esiste nel file system della app, to copia dal bundle 
             try {
                 using FileStream outputStream = File.OpenWrite(targetFile); 
                 using Stream fs = await FileSystem.Current.OpenAppPackageFileAsync(bundleFileName);
-                using BinaryWriter writer = new BinaryWriter(outputStream); 
-                using (BinaryReader reader = new BinaryReader(fs)) {
-                    var bytesRead = 0;
-                    int bufferSize = 1024; 
-                    byte[] bytes; 
-                    var buffer = new byte[bufferSize]; 
-                    using (fs) {
-                        do {
-                            buffer = reader.ReadBytes(bufferSize); 
-                            bytesRead = buffer.Count(); writer.Write(buffer);
-                        }
-                        while (bytesRead > 0) ;
+                using var writer = new BinaryWriter(outputStream);
+                using var reader = new BinaryReader(fs);
+                var bytesRead = 0;
+                int bufferSize = 1024;
+                var buffer = new byte[bufferSize];
+                using (fs) {
+                    do {
+                        buffer = reader.ReadBytes(bufferSize);
+                        bytesRead = buffer.Length;
+                        writer.Write(buffer);
                     }
+                    while (bytesRead > 0);
                 }
             } catch (Exception ex) {
                 await DisplayAlert("Errore", ex.Message, "Ok");
@@ -43,31 +40,33 @@ public partial class MainPage : ContentPage
             }
         }
 
-        using var connection = new SqliteConnection("Data Source =" + targetFile);
+        var connection = new SqliteConnection("Data Source =" + targetFile);
         connection.Open();
 
         var command = connection.CreateCommand();
-        command.CommandText = QueryInput.Text;
+        command.CommandText = $"SELECT {QueryFieldsList.Text} FROM Book WHERE {QueryCondition.Text}";
 
-        using (var reader = command.ExecuteReader()) {
-            string output = "";
-            for (int k = 0; k < reader.FieldCount; k++) {
-                DBDisplay.AddColumnDefinition(new ColumnDefinition());
-            }
-            int i = 0;
-            while (reader.Read()) {
-                DBDisplay.AddRowDefinition(new());
+        try {
+            using var reader = command.ExecuteReader();
 
+            ISBN.IsVisible = true;
+            Titolo.IsVisible = true;
+            Anno.IsVisible = true;
+            Prezzo.IsVisible = true;
+            Editore.IsVisible = true;
+            Genere.IsVisible = true;
+
+            var Books = new ObservableCollection<DTO_Book>();
+
+            for (int i = 0; reader.Read(); i++) {
                 for (int j = 0; j < reader.FieldCount; j++) {
-                    DBDisplay.Add(new Label {
-                        Text = reader.GetString(j)
-                    }, j, i);
-                    output += $"{reader.GetString(j)}, ";
-                    i++;
+                    var b = new DTO_Book(reader);
+                    Books.Add(b);
                 }
-                output += "\n";
             }
-            await DisplayAlert("Database", output, "Ok");
+            DBDisplay.ItemsSource = Books;
+        } catch (Exception ex) {
+            await DisplayAlert("Error", ex.Message, "Ok");
         }
 
         connection.Close();
