@@ -59,10 +59,8 @@ public partial class MainPage : ContentPage
             var Books = new ObservableCollection<DTO_Book>();
 
             for (int i = 0; reader.Read(); i++) {
-                for (int j = 0; j < reader.FieldCount; j++) {
-                    var b = new DTO_Book(reader);
-                    Books.Add(b);
-                }
+                var b = new DTO_Book(reader);
+                Books.Add(b);
             }
             DBDisplay.ItemsSource = Books;
         } catch (Exception ex) {
