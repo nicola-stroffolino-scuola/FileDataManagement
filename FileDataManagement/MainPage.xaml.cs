@@ -58,7 +58,7 @@ public partial class MainPage : ContentPage
 
             var Books = new ObservableCollection<DTO_Book>();
 
-            for (int i = 0; reader.Read(); i++) {
+            while(reader.Read()) {
                 var b = new DTO_Book(reader);
                 Books.Add(b);
             }
